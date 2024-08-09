@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use auth;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -64,4 +65,44 @@ class AuthController extends Controller
             ]
         ]);
     }
+
+
+
+// Login API - POST (email, password)
+public function login(Request $request){
+
+    // Validation
+    $request->validate([
+        "email" => "required|email",
+        "password" => "required"
+    ]);
+
+    $token = auth()->attempt([
+        "email" => $request->email,
+        "password" => $request->password
+    ]);
+
+    if(!$token){
+
+        return response()->json([
+            "status" => false,
+            "message" => "Invalid login details"
+        ]);
+    }
+
+    return response()->json([
+        "status" => true,
+        "message" => "User logged in succcessfully",
+        "token" => $token,
+        "expires_in" => auth()->factory()->getTTL() * 60
+    ]);
+}
+
+     //DECONNEXION
+     public function logout()
+     {
+        auth()->logout();
+        return response()->json(["message" => "Déconnexion réussie"]);
+     }
+
 }
