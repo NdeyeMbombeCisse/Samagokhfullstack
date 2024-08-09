@@ -6,3 +6,5 @@ Route::get('projets', [ProjetController::class, 'index'])->name('projets.index')
 Route::get('details/projet/{projet}', [ProjetController::class, 'show'])->name('projets.show');   
 Route::put('update/projet/{projet}', [ProjetController::class, 'update'])->name('projets.update'); 
 Route::post('add/projets', [ProjetController::class, 'store'])->name('projets.store');         
+Route::delete('delete/projets/{projet}', [ProjetController::class, 'destroy'])->name('projets.destroy'); 
+

@@ -47,24 +47,24 @@ class ProjetController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Projet $projet)
-    {
-        //
-    }
+    
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjetRequest $request, Projet $projet)
+
+    public function update(UpdateProjetRequest $request, Projet $projet): JsonResponse
     {
-        //
+        $projet->update($request->validated());
+        return response()->json($projet, 200); // 200 OK
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Projet $projet)
+    public function destroy(Projet $projet): JsonResponse
     {
-        //
+        $projet->delete();
+        return response()->json(null, 204); // 204 No Content
     }
 }
