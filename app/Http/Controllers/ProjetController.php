@@ -5,15 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProjetRequest;
 use App\Http\Requests\UpdateProjetRequest;
 use App\Models\Projet;
+use Illuminate\Http\JsonResponse;
+
 
 class ProjetController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $projets = Projet::all();
+        return response()->json($projets, 200);
     }
 
     /**
