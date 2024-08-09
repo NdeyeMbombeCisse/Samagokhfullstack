@@ -38,9 +38,9 @@ class ProjetController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Projet $projet)
+    public function show(Projet $projet): JsonResponse
     {
-        //
+        return response()->json($projet, 200);
     }
 
     /**
