@@ -6,23 +6,23 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProjetRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'titre' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|required|string',
+            'objectif' => 'sometimes|required|string',
+            'attente' => 'sometimes|required|string',
+            'cible' => 'sometimes|required|string|max:255',
+            'categorie' => 'sometimes|required|in:education,assainissement,jeunesse,sport,divertissement',
+            'statut' => 'sometimes|required|boolean',
+            'etat' => 'sometimes|required|boolean',
+            'budget' => 'sometimes|required|string|max:255',
         ];
     }
 }
