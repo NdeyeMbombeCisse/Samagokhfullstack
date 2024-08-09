@@ -5,62 +5,55 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreVoteRequest;
 use App\Http\Requests\UpdateVoteRequest;
 use App\Models\Vote;
+use Illuminate\Http\JsonResponse;
 
 class VoteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // GET: /api/votes
+    public function index(): JsonResponse
     {
-        //
+        $votes = Vote::all();
+        return response()->json([
+            'message' => 'Liste des votes récupérée avec succès',
+            'data' => $votes
+        ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // POST: /api/votes
+    public function store(StoreVoteRequest $request): JsonResponse
     {
-        //
+        $vote = Vote::create($request->validated());
+        return response()->json([
+            'message' => 'Vote créé avec succès',
+            'data' => $vote
+        ], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreVoteRequest $request)
+    // GET: /api/votes/{vote}
+    public function show(Vote $vote): JsonResponse
     {
-        //
+        return response()->json([
+            'message' => 'Vote récupéré avec succès',
+            'data' => $vote
+        ], 200);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Vote $vote)
+    // PUT/PATCH: /api/votes/{vote}
+    public function update(UpdateVoteRequest $request, Vote $vote): JsonResponse
     {
-        //
+        $vote->update($request->validated());
+        return response()->json([
+            'message' => 'Vote mis à jour avec succès',
+            'data' => $vote
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Vote $vote)
+    // DELETE: /api/votes/{vote}
+    public function destroy(Vote $vote): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateVoteRequest $request, Vote $vote)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Vote $vote)
-    {
-        //
+        $vote->delete();
+        return response()->json([
+            'message' => 'Vote supprimé avec succès'
+        ], 200);
     }
 }
