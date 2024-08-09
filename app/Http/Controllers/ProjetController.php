@@ -30,9 +30,10 @@ class ProjetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProjetRequest $request)
+    public function store(StoreProjetRequest $request): JsonResponse
     {
-        //
+        $projet = Projet::create($request->validated());
+        return response()->json($projet, 201); // 201 Created
     }
 
     /**
