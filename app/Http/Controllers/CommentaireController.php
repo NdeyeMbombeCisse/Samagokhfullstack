@@ -5,62 +5,63 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCommentaireRequest;
 use App\Http\Requests\UpdateCommentaireRequest;
 use App\Models\Commentaire;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+
 
 class CommentaireController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // GET: /api/commentaires
     public function index()
     {
-        //
+        $commentaires = Commentaire::all();
+        return response()->json([
+            'message' => 'Liste des commentaires récupérée avec succès',
+            'data' => $commentaires
+        ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // POST: /api/commentaires
     public function store(StoreCommentaireRequest $request)
     {
-        //
+        $commentaire = Commentaire::create($request->validated());
+        return response()->json([
+            'message' => 'Commentaire créé avec succès',
+            'data' => $commentaire
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Commentaire $commentaire)
+    // GET: /api/commentaires/{id}
+    public function show($id)
     {
-        //
+        $commentaire = Commentaire::findOrFail($id);
+        return response()->json([
+            'message' => 'Commentaire récupéré avec succès',
+            'data' => $commentaire
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Commentaire $commentaire)
+    // PUT/PATCH: /api/commentaires/{id}
+    public function update(UpdateCommentaireRequest $request, Commentaire $commentaire): JsonResponse
     {
-        //
+        // Mise à jour des champs en utilisant les données validées
+        $commentaire->update($request->validated());
+
+        // Retourner une réponse JSON avec un message de succès
+        return response()->json([
+            'message' => 'Commentaire mis à jour avec succès',
+            'data' => $commentaire
+        ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateCommentaireRequest $request, Commentaire $commentaire)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Commentaire $commentaire)
+    // DELETE: /api/commentaires/{id}
+    public function destroy($id)
     {
-        //
+        $commentaire = Commentaire::findOrFail($id);
+        $commentaire->delete();
+        return response()->json([
+            'message' => 'Commentaire supprimé avec succès'
+        ], 200); // 200 plutôt que 204 pour pouvoir inclure un message
     }
 }
