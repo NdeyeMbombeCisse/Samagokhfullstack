@@ -13,7 +13,7 @@ class VilleController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Ville::all());
     }
 
     /**
@@ -29,7 +29,8 @@ class VilleController extends Controller
      */
     public function store(StoreVilleRequest $request)
     {
-        //
+        $ville = Ville::create($request->validated());
+        return response()->json($ville, 201);
     }
 
     /**
@@ -37,7 +38,7 @@ class VilleController extends Controller
      */
     public function show(Ville $ville)
     {
-        //
+        return response()->json($ville);
     }
 
     /**
@@ -53,7 +54,8 @@ class VilleController extends Controller
      */
     public function update(UpdateVilleRequest $request, Ville $ville)
     {
-        //
+        $ville->update($request->validated());
+        return response()->json($ville);
     }
 
     /**
@@ -61,6 +63,7 @@ class VilleController extends Controller
      */
     public function destroy(Ville $ville)
     {
-        //
+        $ville->delete();
+        return response()->json(['message' => 'Ville supprimée avec succès']);
     }
 }
