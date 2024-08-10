@@ -6,6 +6,16 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ProjetController;
 
 
+//spaties congiguration
+  
+// Route::get('/home', [HomeController::class, 'index'])->name('home');
+  
+// Route::group(['middleware' => ['auth']], function() {
+    Route::resource('roles', RoleController::class);
+    Route::resource('users', UserController::class);
+// });
+
+
 
 //Login , register and logout
 Route::post("register", [AuthController::class, "register"]);

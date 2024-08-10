@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use auth;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreUserRequest;
@@ -16,39 +17,29 @@ class AuthController extends Controller
     // Register API - POST (prenom, nom, email, password, etc.)
     public function register(StoreUserRequest $request)
     {
-        // Handle file upload
-        $photoPath = null;
-        if ($request->hasFile('photo')) {
-            $photo = $request->file('photo');
-            $photoPath = $photo->store('photos', 'public'); // Store in public/photos directory
-        }
-        
-        // User model to save user in database
-        User::create([
-            'commune_id' => $request->commune_id,
-            'nom' => $request->nom,
-            'prenom' => $request->prenom,
-            'date_naissance' => $request->date_naissance,
-            'adresse' => $request->adresse,
-            'lieu_naissance' => $request->lieu_naissance,
-            'fonction' => $request->fonction,
-            'genre' => $request->genre,
-            'telephone' => $request->telephone,
-            'situation_matriminiale' => $request->situation_matriminiale,
-            'date_integration' => $request->date_integration,
-            'date_sortie' => $request->date_sortie,
-            'photo' => $photoPath,
-            'email' => $request->email,
-            'password' => Hash::make($request->password)
-        ]);
+        $user = new User();
+    $user->fill($request->validated());
 
-        return response()->json([
-            'status' => true,
-            'message' => 'User registered successfully',
-            'data' => [
-                'photo' => $photoPath
-            ]
-        ]);
+    if ($request->hasFile('photo')) {
+        $photo = $request->file('photo');
+        $user->photo = $photo->store('users', 'public');
+    }
+
+    $user->password = Hash::make($request->password);
+    $user->save();
+
+    // Attribuer le rôle "user"
+    $userRole = Role::findByName('user');
+    $user->assignRole($userRole);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'User registered successfully and assigned user role',
+        'data' => [
+            'user' => $user,
+            'photo' => $user->photo
+        ]
+    ], 201);
     }
 
     // Login API - POST (email, password)
