@@ -178,4 +178,17 @@ public function login(Request $request){
     ]);
 }
 
+
+//SoftDeletes
+public function softDelete()
+{
+    $user = auth()->user();
+    $user->delete();
+
+    return response()->json([
+        'status' => true,
+        'message' => 'User account soft deleted successfully'
+    ]);
+}
+
 }

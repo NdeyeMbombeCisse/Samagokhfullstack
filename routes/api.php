@@ -12,7 +12,10 @@ Route::post("register", [AuthController::class, "register"]);
 Route::post("login", [AuthController::class, "login"]);
 Route::get("logout", [AuthController::class, "logout"]);
 Route::get("refreshToken", [AuthController::class, "refreshToken"]);
-Route::put('update-profile', [AuthController::class, 'update']);
+Route::put('update-profile/{id}', [AuthController::class, 'update']);
+
+//softDelete
+Route::delete('delete-account/{id}', [AuthController::class, 'softDelete']);
 
 
 
