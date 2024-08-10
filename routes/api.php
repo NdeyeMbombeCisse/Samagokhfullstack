@@ -37,5 +37,5 @@ Route::apiResource('commentaires', CommentaireController::class);
  Route::apiResource('votes', VoteController::class);
 
  // route pour ville
- Route::apiResource('ville', VilleController::class);
- 
+ Route::apiResource('villes', VilleController::class);
+
