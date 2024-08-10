@@ -38,11 +38,13 @@ class AuthController extends Controller
             $photo = $request->file('photo');
             $photoPath = $photo->store('photos', 'public'); // Store in public/photos directory
         }
+        
 
         // User model to save user in database
         User::create([
             'commune_id' => $request->commune_id, // Ajouter l'ID de la commune
             'nom' => $request->nom,
+            'prenom' => $request->prenom,
             'date_naissance' => $request->date_naissance,
             'adresse' => $request->adresse,
             'lieu_naissance' => $request->lieu_naissance,
@@ -67,6 +69,14 @@ class AuthController extends Controller
     }
 
 
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json(
+            ['success' => false, 'errors' => $validator->errors()],
+            422
+        ));
+    }
 
 // Login API - POST (email, password)
 public function login(Request $request){
@@ -104,5 +114,68 @@ public function login(Request $request){
         auth()->logout();
         return response()->json(["message" => "Déconnexion réussie"]);
      }
+
+
+
+
+
+     public function update(Request $request)
+{
+    // Validation
+    $request->validate([
+        'commune_id' => 'nullable|exists:communes,id',
+        'prenom' => 'required|string',
+        'nom' => 'required|string',
+        'date_naissance' => 'required|date',
+        'adresse' => 'required|string',
+        'lieu_naissance' => 'required|string',
+        'fonction' => 'nullable|in:eleve,bachelier,etudiant,diplome,mentor_certifie,profetionnel_reconvertit,retraite,chomeur',
+        'genre' => 'required|in:masculin,feminin',
+        'telephone' => 'required|string|unique:users,telephone,' . auth()->id(),
+        'situation_matriminiale' => 'required|in:marie,divorce,celibataire,veuve',
+        'date_integration' => 'nullable|date',
+        'date_sortie' => 'nullable|date',
+        'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'email' => 'required|string|email|unique:users,email,' . auth()->id(),
+        'password' => 'nullable|string|confirmed'
+    ]);
+
+    // Find the authenticated user
+    $user = auth()->user();
+
+    // Handle file upload
+    $photoPath = $user->photo;
+    if ($request->hasFile('photo')) {
+        $photo = $request->file('photo');
+        $photoPath = $photo->store('photos', 'public');
+    }
+
+    // Update user details
+    $user->update([
+        'commune_id' => $request->commune_id,
+        'nom' => $request->nom,
+        'prenom' => $request->prenom,
+        'date_naissance' => $request->date_naissance,
+        'adresse' => $request->adresse,
+        'lieu_naissance' => $request->lieu_naissance,
+        'fonction' => $request->fonction,
+        'genre' => $request->genre,
+        'telephone' => $request->telephone,
+        'situation_matriminiale' => $request->situation_matriminiale,
+        'date_integration' => $request->date_integration,
+        'date_sortie' => $request->date_sortie,
+        'photo' => $photoPath,
+        'email' => $request->email,
+        'password' => $request->filled('password') ? Hash::make($request->password) : $user->password
+    ]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'User details updated successfully',
+        'data' => [
+            'photo' => $photoPath
+        ]
+    ]);
+}
 
 }
