@@ -7,31 +7,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     // Register API - POST (prenom, nom, email, password, etc.)
-    public function register(Request $request)
+    public function register(StoreUserRequest $request)
     {
-        // Validation
-        $request->validate([
-            'commune_id' => 'nullable|exists:communes,id' ,// Validation pour vérifier que commune_id existe dans la table communes            'prenom' => $request->prenom,
-            'prenom' => 'required|string',
-            'nom' => 'required|string',
-            'date_naissance' => 'required|date',
-            'adresse' => 'required|string',
-            'lieu_naissance' => 'required|string',
-            'fonction' => 'nullable|in:eleve,bachelier,etudiant,diplome,mentor_certifie,profetionnel_reconvertit,retraite,chomeur',
-            'genre' => 'required|in:masculin,feminin',
-            'telephone' => 'required|string|unique:users',
-            'situation_matriminiale' => 'required|in:marie,divorce,celibataire,veuve',
-            'date_integration' => 'nullable|date',
-            'date_sortie' => 'nullable|date',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|confirmed'
-        ]);
-
         // Handle file upload
         $photoPath = null;
         if ($request->hasFile('photo')) {
@@ -39,10 +23,9 @@ class AuthController extends Controller
             $photoPath = $photo->store('photos', 'public'); // Store in public/photos directory
         }
         
-
         // User model to save user in database
         User::create([
-            'commune_id' => $request->commune_id, // Ajouter l'ID de la commune
+            'commune_id' => $request->commune_id,
             'nom' => $request->nom,
             'prenom' => $request->prenom,
             'date_naissance' => $request->date_naissance,
@@ -68,127 +51,91 @@ class AuthController extends Controller
         ]);
     }
 
-
-
-    public function failedValidation(Validator $validator)
+    // Login API - POST (email, password)
+    public function login(Request $request)
     {
-        throw new HttpResponseException(response()->json(
-            ['success' => false, 'errors' => $validator->errors()],
-            422
-        ));
-    }
+        // Validation
+        $request->validate([
+            "email" => "required|email",
+            "password" => "required"
+        ]);
 
-// Login API - POST (email, password)
-public function login(Request $request){
+        $token = auth()->attempt([
+            "email" => $request->email,
+            "password" => $request->password
+        ]);
 
-    // Validation
-    $request->validate([
-        "email" => "required|email",
-        "password" => "required"
-    ]);
-
-    $token = auth()->attempt([
-        "email" => $request->email,
-        "password" => $request->password
-    ]);
-
-    if(!$token){
+        if(!$token){
+            return response()->json([
+                "status" => false,
+                "message" => "Invalid login details"
+            ]);
+        }
 
         return response()->json([
-            "status" => false,
-            "message" => "Invalid login details"
+            "status" => true,
+            "message" => "User logged in successfully",
+            "token" => $token,
+            "expires_in" => auth()->factory()->getTTL() * 60
         ]);
     }
 
-    return response()->json([
-        "status" => true,
-        "message" => "User logged in succcessfully",
-        "token" => $token,
-        "expires_in" => auth()->factory()->getTTL() * 60
-    ]);
-}
-
-     //DECONNEXION
-     public function logout()
-     {
+    //DECONNEXION
+    public function logout()
+    {
         auth()->logout();
         return response()->json(["message" => "Déconnexion réussie"]);
-     }
-
-
-
-
-
-     public function update(Request $request)
-{
-    // Validation
-    $request->validate([
-        'commune_id' => 'nullable|exists:communes,id',
-        'prenom' => 'required|string',
-        'nom' => 'required|string',
-        'date_naissance' => 'required|date',
-        'adresse' => 'required|string',
-        'lieu_naissance' => 'required|string',
-        'fonction' => 'nullable|in:eleve,bachelier,etudiant,diplome,mentor_certifie,profetionnel_reconvertit,retraite,chomeur',
-        'genre' => 'required|in:masculin,feminin',
-        'telephone' => 'required|string|unique:users,telephone,' . auth()->id(),
-        'situation_matriminiale' => 'required|in:marie,divorce,celibataire,veuve',
-        'date_integration' => 'nullable|date',
-        'date_sortie' => 'nullable|date',
-        'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'email' => 'required|string|email|unique:users,email,' . auth()->id(),
-        'password' => 'nullable|string|confirmed'
-    ]);
-
-    // Find the authenticated user
-    $user = auth()->user();
-
-    // Handle file upload
-    $photoPath = $user->photo;
-    if ($request->hasFile('photo')) {
-        $photo = $request->file('photo');
-        $photoPath = $photo->store('photos', 'public');
     }
 
-    // Update user details
-    $user->update([
-        'commune_id' => $request->commune_id,
-        'nom' => $request->nom,
-        'prenom' => $request->prenom,
-        'date_naissance' => $request->date_naissance,
-        'adresse' => $request->adresse,
-        'lieu_naissance' => $request->lieu_naissance,
-        'fonction' => $request->fonction,
-        'genre' => $request->genre,
-        'telephone' => $request->telephone,
-        'situation_matriminiale' => $request->situation_matriminiale,
-        'date_integration' => $request->date_integration,
-        'date_sortie' => $request->date_sortie,
-        'photo' => $photoPath,
-        'email' => $request->email,
-        'password' => $request->filled('password') ? Hash::make($request->password) : $user->password
-    ]);
+    public function update(UpdateUserRequest $request)
+    {
+        // Find the authenticated user
+        $user = auth()->user();
 
-    return response()->json([
-        'status' => true,
-        'message' => 'User details updated successfully',
-        'data' => [
-            'photo' => $photoPath
-        ]
-    ]);
-}
+        // Handle file upload
+        $photoPath = $user->photo;
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photoPath = $photo->store('photos', 'public');
+        }
 
+        // Update user details
+        $user->update([
+            'commune_id' => $request->commune_id,
+            'nom' => $request->nom,
+            'prenom' => $request->prenom,
+            'date_naissance' => $request->date_naissance,
+            'adresse' => $request->adresse,
+            'lieu_naissance' => $request->lieu_naissance,
+            'fonction' => $request->fonction,
+            'genre' => $request->genre,
+            'telephone' => $request->telephone,
+            'situation_matriminiale' => $request->situation_matriminiale,
+            'date_integration' => $request->date_integration,
+            'date_sortie' => $request->date_sortie,
+            'photo' => $photoPath,
+            'email' => $request->email,
+            'password' => $request->filled('password') ? Hash::make($request->password) : $user->password
+        ]);
 
-//SoftDeletes
-public function softDelete()
-{
-    $user = auth()->user();
-    $user->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'User details updated successfully',
+            'data' => [
+                'photo' => $photoPath
+            ]
+        ]);
+    }
 
-    return response()->json([
-        'status' => true,
-        'message' => 'User account soft deleted successfully'
-    ]);
-}
+    //SoftDeletes
+    public function softDelete()
+    {
+        $user = auth()->user();
+        $user->delete();
 
+        return response()->json([
+            'status' => true,
+            'message' => 'User account soft deleted successfully'
+        ]);
+    }
 }
