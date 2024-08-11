@@ -10,8 +10,7 @@ use App\Http\Controllers\Auth\AuthController;
 
 //spaties congiguration
   
-// Route::get('/home', [HomeController::class, 'index'])->name('home');
-  
+//Route of the middleware Spaties  
 Route::group(['middleware' => ['auth']], function() {
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('users', AdminController::class);
@@ -25,10 +24,15 @@ Route::group(['middleware' => ['auth']], function() {
 
 
 //Login , register and logout
+//register
 Route::post("register", [AuthController::class, "register"]);
+//route of login
 Route::post("login", [AuthController::class, "login"]);
+//route of logout
 Route::get("logout", [AuthController::class, "logout"]);
+//route of refresh
 Route::get("refreshToken", [AuthController::class, "refreshToken"]);
+//route update profil
 Route::put('update-profile/{id}', [AuthController::class, 'update']);
 
 //softDelete

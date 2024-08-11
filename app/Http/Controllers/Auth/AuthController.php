@@ -14,24 +14,25 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    // Register API - POST (prenom, nom, email, password, etc.)
+    // Register for the user xhith user permisssion defauld
     public function register(StoreUserRequest $request)
     {
         $user = new User();
     $user->fill($request->validated());
-
+        //upload user's profil
     if ($request->hasFile('photo')) {
         $photo = $request->file('photo');
         $user->photo = $photo->store('users', 'public');
     }
-
+    //hashed password 
     $user->password = Hash::make($request->password);
+    //save the data of the user
     $user->save();
 
     // Attribuer le rôle "user"
     $userRole = Role::findByName('user');
     $user->assignRole($userRole);
-
+    //response json for the processus save
     return response()->json([
         'status' => true,
         'message' => 'User registered successfully and assigned user role',
