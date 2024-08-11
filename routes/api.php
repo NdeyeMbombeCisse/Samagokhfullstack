@@ -30,6 +30,7 @@ Route::apiResource('commentaires', CommentaireController::class);
  Route::apiResource('votes', VoteController::class);
 
 
+
  //Route pour la commune
 
 

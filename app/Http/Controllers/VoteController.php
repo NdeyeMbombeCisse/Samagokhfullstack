@@ -40,13 +40,14 @@ class VoteController extends Controller
 
     // PUT/PATCH: /api/votes/{vote}
     public function update(UpdateVoteRequest $request, Vote $vote): JsonResponse
-    {
-        $vote->update($request->validated());
-        return response()->json([
-            'message' => 'Vote mis à jour avec succès',
-            'data' => $vote
-        ], 200);
-    }
+{
+    $vote->update($request->validated());
+    return response()->json([
+        'message' => 'Vote mis à jour avec succès',
+        'data' => $vote
+    ], 200);
+    
+}
 
     // DELETE: /api/votes/{vote}
     public function destroy(Vote $vote): JsonResponse
