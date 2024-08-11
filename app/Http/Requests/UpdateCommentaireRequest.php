@@ -11,7 +11,7 @@ class UpdateCommentaireRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class UpdateCommentaireRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'contenu' => 'sometimes|string|max:500',
+            'projet_id' => 'sometimes|exists:projets,id',
         ];
     }
 }

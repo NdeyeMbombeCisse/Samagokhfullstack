@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+
 class StoreCommuneRequest extends FormRequest
 {
     /**
@@ -11,7 +12,7 @@ class StoreCommuneRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true; // Change this to true for authorization
     }
 
     /**
@@ -22,7 +23,9 @@ class StoreCommuneRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'libelle' => 'required|string|max:255',
+            'description' => 'required|string',
+            'ville_id' => 'required|exists:villes,id',
         ];
     }
 }

@@ -64,6 +64,7 @@ class AuthController extends Controller
             ]);
         }
 
+<<<<<<< HEAD
         return response()->json([
             "status" => true,
             "message" => "User logged in successfully",
@@ -94,6 +95,12 @@ class AuthController extends Controller
         // Update user details
         $user->update([
             'commune_id' => $request->commune_id,
+=======
+        // User model to save user in database
+        User::create([
+            'commune_id' => $request->commune_id, // Ajouter l'ID de la commune
+            'prenom' => $request->prenom,
+>>>>>>> 1bcc11b9f19d1b0101d1cf0b88463be02c17d5c1
             'nom' => $request->nom,
             'prenom' => $request->prenom,
             'date_naissance' => $request->date_naissance,
