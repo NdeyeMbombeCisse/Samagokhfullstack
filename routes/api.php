@@ -36,9 +36,6 @@ Route::apiResource('commentaires', CommentaireController::class);
 
 
  //Route pour la commune
-
-
-
 Route::get('communes', [CommuneController::class, 'index'])->name('communes.index');
 Route::get('details/commune/{commune}', [CommuneController::class, 'show'])->name('communes.show');
 Route::put('update/commune/{commune}', [CommuneController::class, 'update'])->name('communes.update');
@@ -48,9 +45,6 @@ Route::delete('delete/commune/{commune}', [CommuneController::class, 'destroy'])
 
 
 //Route pour notification
-
-
-
 Route::get('notifications', function () {
     $user = Auth::user();
     return response()->json($user->notifications, 200);
