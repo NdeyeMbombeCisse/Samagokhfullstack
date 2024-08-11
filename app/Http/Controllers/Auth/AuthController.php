@@ -129,4 +129,27 @@ class AuthController extends Controller
             'message' => 'User account soft deleted successfully'
         ]);
     }
+
+
+     // Refresh Token API - GET (JWT Auth Token)    
+     public function refreshToken(){
+        $token = auth()->refresh();
+        return response()->json([
+            "status" => true,
+            "message"=> "New access Token",
+            "token"=>$token,
+            "expires_in" => auth()->factory()->getTTL() * 60
+        ]);
+     }
+
+     //restor the user softDelete
+     public function restore($id)
+{
+    $user = User::withTrashed()->find($id);
+    if ($user) {
+        $user->restore();
+        return $user;
+    }
+    return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+}
 }

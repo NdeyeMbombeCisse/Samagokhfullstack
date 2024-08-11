@@ -15,6 +15,11 @@ use App\Http\Controllers\Auth\AuthController;
 Route::group(['middleware' => ['auth']], function() {
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('users', AdminController::class);
+
+    //refrech Token
+    Route::get("refreshToken", [AuthController::class, "refreshToken"]);
+    //Restaurer un utilisateur
+    Route::post('etudiants/{id}/restore', [AuthController::class, 'restore']);
      });
 
 
