@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCommuneRequest;
 use App\Http\Requests\UpdateCommuneRequest;
 use App\Models\Commune;
+use Illuminate\Http\Request;
 
 class CommuneController extends Controller
 {
@@ -13,15 +14,8 @@ class CommuneController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $communes = Commune::all();
+        return response()->json($communes);
     }
 
     /**
@@ -29,7 +23,8 @@ class CommuneController extends Controller
      */
     public function store(StoreCommuneRequest $request)
     {
-        //
+        $commune = Commune::create($request->validated());
+        return response()->json($commune, 201);
     }
 
     /**
@@ -37,15 +32,7 @@ class CommuneController extends Controller
      */
     public function show(Commune $commune)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Commune $commune)
-    {
-        //
+        return response()->json($commune);
     }
 
     /**
@@ -53,7 +40,8 @@ class CommuneController extends Controller
      */
     public function update(UpdateCommuneRequest $request, Commune $commune)
     {
-        //
+        $commune->update($request->validated());
+        return response()->json($commune);
     }
 
     /**
@@ -61,6 +49,7 @@ class CommuneController extends Controller
      */
     public function destroy(Commune $commune)
     {
-        //
+        $commune->delete();
+        return response()->json(null, 204);
     }
 }

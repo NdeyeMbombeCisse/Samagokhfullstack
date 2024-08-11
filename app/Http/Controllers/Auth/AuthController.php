@@ -42,6 +42,7 @@ class AuthController extends Controller
         // User model to save user in database
         User::create([
             'commune_id' => $request->commune_id, // Ajouter l'ID de la commune
+            'prenom' => $request->prenom,
             'nom' => $request->nom,
             'date_naissance' => $request->date_naissance,
             'adresse' => $request->adresse,

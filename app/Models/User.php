@@ -68,5 +68,5 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasmany(Vote::class);
     }
 
-  
+
 }
