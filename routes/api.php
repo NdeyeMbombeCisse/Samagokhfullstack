@@ -6,6 +6,7 @@ use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ProjetController;
+use App\Http\Controllers\VilleController;
 
 
 
