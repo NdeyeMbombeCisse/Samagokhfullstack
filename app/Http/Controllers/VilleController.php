@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreVilleRequest;
-use App\Http\Requests\UpdateVilleRequest;
 use App\Models\Ville;
+use Illuminate\Http\Request;
 
 class VilleController extends Controller
 {
@@ -13,54 +12,74 @@ class VilleController extends Controller
      */
     public function index()
     {
-        //
-    }
+        return Ville::all();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreVilleRequest $request)
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'libelle'=>'required|string|max:225',
+            'description'=>'required|string',
+        ]);
+        return Ville::create($request->all());
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Ville $ville)
+    public function show(string $id)
     {
-        //
-    }
+        $ville = Ville::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Ville $ville)
-    {
-        //
+
+        if(!$ville){
+            return response()->json(['message'=>'ville non trouvée',404]);
+        }
+        return $ville;
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateVilleRequest $request, Ville $ville)
+    public function update(Request $request, string $id)
     {
-        //
+        $ville = Ville::find($id);
+
+
+        if(!$ville){
+            return response()->json(['message'=>'ville non trouvée',404]);
+        }
+        $request->validate([
+            'libelle'=>'required|string|max:225',
+            'description'=>'required|string',
+        ]);
+        $ville->update($request->all());
+        return $ville;
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ville $ville)
+    public function destroy(string $id)
     {
-        //
+        $ville = Ville::find($id);
+
+
+        if(!$ville){
+            return response()->json(['message'=>'ville non trouvée',404]);
+        }
+
+
+        $ville->delete();
+        return response()->json(['message'=>'Ville supprimée avec succés']);
     }
-}
+
+    }
+
