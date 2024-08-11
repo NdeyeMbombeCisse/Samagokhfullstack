@@ -35,3 +35,4 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('commentaires', CommentaireController::class);
 // route pour vote
  Route::apiResource('votes', VoteController::class);
+

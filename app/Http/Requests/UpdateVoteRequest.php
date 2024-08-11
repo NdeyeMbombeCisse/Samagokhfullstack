@@ -22,7 +22,7 @@ class UpdateVoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'statut' => 'sometimes|boolean',
+            'statut' => 'sometimes|required|boolean',
             'projet_id' => 'sometimes|exists:projets,id',
         ];
     }
