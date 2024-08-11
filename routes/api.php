@@ -2,8 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProjetController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProjetController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Auth\AuthController;
 
 
@@ -11,10 +12,10 @@ use App\Http\Controllers\Auth\AuthController;
   
 // Route::get('/home', [HomeController::class, 'index'])->name('home');
   
-// Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth']], function() {
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('users', AdminController::class);
-    // });
+     });
 
 
 
