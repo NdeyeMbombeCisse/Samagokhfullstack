@@ -15,7 +15,7 @@ use App\Http\Controllers\CommentaireController;
 //spaties congiguration
   
 //Route of the middleware Spaties  
-// Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth']], function() {
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('users', AdminController::class);
 
@@ -23,7 +23,9 @@ use App\Http\Controllers\CommentaireController;
     Route::get("refreshToken", [AuthController::class, "refreshToken"]);
     //Restaurer un utilisateur
     Route::post('users/{id}/restore', [AuthController::class, 'restore']);
-    //  });
+    //route update profil
+    Route::put('update-profile', [AuthController::class, 'update']);
+ });
 
 
 
