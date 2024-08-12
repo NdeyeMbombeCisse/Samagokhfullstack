@@ -2,14 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProjetRequest;
-use App\Http\Requests\UpdateProjetRequest;
+use App\Models\User;
 use App\Models\Projet;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\StoreProjetRequest;
+use App\Http\Requests\UpdateProjetRequest;
+use App\Notifications\NewProjectNotification;
 
 
 class ProjetController extends Controller
 {
+
+    function __construct()
+    {
+         $this->middleware('permission:project-list|project-create|project-edit|project-delete', ['only' => ['index','show']]);
+         $this->middleware('permission:project-create', ['only' => ['create','store']]);
+         $this->middleware('permission:project-edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:project-delete', ['only' => ['destroy']]);
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -31,10 +43,18 @@ class ProjetController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreProjetRequest $request): JsonResponse
-    {
-        $projet = Projet::create($request->validated());
-        return response()->json($projet, 201); // 201 Created
+{
+    $projet = Projet::create($request->validated());
+
+    // Envoyer la notification à tous les utilisateurs
+    $users = User::all();
+    foreach ($users as $user) {
+        $user->notify(new NewProjectNotification($projet));
     }
+
+    return response()->json($projet, 201); // 201 Created
+}
+
 
     /**
      * Display the specified resource.
@@ -47,7 +67,7 @@ class ProjetController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    
+
 
     /**
      * Update the specified resource in storage.
