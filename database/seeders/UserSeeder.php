@@ -27,6 +27,20 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
-        ]);
+        ],
+    [
+       'nom' => "Ndeye Mbombe Cisse",
+            'email' => "nmc@gmail.com",
+            'date_naissance' => "1990/01/01",
+            'adresse' => "Touba",
+            'lieu_naissance' => "Touba",
+            'genre' => "masculin",
+            'telephone' => "784055367",
+            'situation_matrimoniale' => "marie",  // Correction ici
+            'commune_id' => 2,
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'),
+            'remember_token' => Str::random(10), 
+    ]);
     }
 }

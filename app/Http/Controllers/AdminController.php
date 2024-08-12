@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,13 @@ use Illuminate\Http\JsonResponse;
 
 class AdminController extends Controller
 {
+    // function __construct()
+    // {
+    //      $this->middleware('permission:admin-list|admin-create|admin-edit|admin-delete', ['only' => ['index','show']]);
+    //      $this->middleware('permission:admin-create', ['only' => ['create','store']]);
+    //      $this->middleware('permission:admin-edit', ['only' => ['edit','update']]);
+    //      $this->middleware('permission:admin-delete', ['only' => ['destroy']]);
+    // }
     /**
      * Display a listing of the resource.
      *
