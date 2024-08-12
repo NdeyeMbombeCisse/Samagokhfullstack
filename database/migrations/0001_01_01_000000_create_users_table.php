@@ -27,6 +27,7 @@ return new class extends Migration
                 $table->date('date_integration')->nullable();
                 $table->date('date_sortie')->nullable();
                 $table->string('photo')->nullable();
+                $table->string('img')->nullable();
                 $table->string('email')->unique();
                 $table->string('password');
                 $table->foreignIdFor(Commune::class)->constrained()->onDelete('cascade');
