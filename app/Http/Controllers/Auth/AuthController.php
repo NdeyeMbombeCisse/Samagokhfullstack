@@ -24,7 +24,7 @@ class AuthController extends Controller
         $photo = $request->file('photo');
         $user->photo = $photo->store('users', 'public');
     }
-    //hashed password 
+    //hashed password
     $user->password = Hash::make($request->password);
     //save the data of the user
     $user->save();
@@ -103,7 +103,7 @@ class AuthController extends Controller
             'fonction' => $request->fonction,
             'genre' => $request->genre,
             'telephone' => $request->telephone,
-            'situation_matriminiale' => $request->situation_matriminiale,
+            'situation_matrimoniale' => $request->situation_matrimoniale,
             'date_integration' => $request->date_integration,
             'date_sortie' => $request->date_sortie,
             'photo' => $photoPath,
@@ -133,7 +133,7 @@ class AuthController extends Controller
     }
 
 
-     // Refresh Token API - GET (JWT Auth Token)    
+     // Refresh Token API - GET (JWT Auth Token)
      public function refreshToken(){
         $token = auth()->refresh();
         return response()->json([

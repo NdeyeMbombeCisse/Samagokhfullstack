@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Seeders;
 
 use App\Models\User;
@@ -23,8 +22,8 @@ class UserSeeder extends Seeder
             'lieu_naissance' => "Touba",
             'genre' => "masculin",
             'telephone' => "766149938",
-            'situation_matriminiale' => "marie",
-            'commune_id' => 1,
+            'situation_matrimoniale' => "marie",  // Correction ici
+            'commune_id' => 2,
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
