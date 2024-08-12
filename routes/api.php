@@ -4,10 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProjetController;
+use App\Http\Controllers\VilleController;
+use App\Http\Controllers\CommuneController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\VoteController;
-use App\Http\Controllers\CommuneController;
 use App\Http\Controllers\CommentaireController;
 
 
@@ -56,12 +57,12 @@ Route::apiResource('commentaires', CommentaireController::class);
 // route pour vote
  Route::apiResource('votes', VoteController::class);
 
+ // route pour ville
+ Route::apiResource('villes', VilleController::class);
+
 
 
  //Route pour la commune
-
-
-
 Route::get('communes', [CommuneController::class, 'index'])->name('communes.index');
 Route::get('details/commune/{commune}', [CommuneController::class, 'show'])->name('communes.show');
 Route::put('update/commune/{commune}', [CommuneController::class, 'update'])->name('communes.update');
@@ -71,9 +72,6 @@ Route::delete('delete/commune/{commune}', [CommuneController::class, 'destroy'])
 
 
 //Route pour notification
-
-
-
 Route::get('notifications', function () {
     $user = Auth::user();
     return response()->json($user->notifications, 200);
