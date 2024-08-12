@@ -15,15 +15,15 @@ use App\Http\Controllers\CommentaireController;
 //spaties congiguration
   
 //Route of the middleware Spaties  
-Route::group(['middleware' => ['auth']], function() {
+// Route::group(['middleware' => ['auth']], function() {
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('users', AdminController::class);
 
     //refrech Token
     Route::get("refreshToken", [AuthController::class, "refreshToken"]);
     //Restaurer un utilisateur
-    Route::post('etudiants/{id}/restore', [AuthController::class, 'restore']);
-     });
+    Route::post('users/{id}/restore', [AuthController::class, 'restore']);
+    //  });
 
 
 
