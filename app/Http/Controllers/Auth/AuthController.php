@@ -118,47 +118,7 @@ foreach ($defaultPermissions as $permissionName) {
         return response()->json(["message" => "Déconnexion réussie"]);
     }
 
-    // public function update(UpdateUserRequest $request)
-    // {
-    //     // Find the authenticated user
-    //     $user = auth()->user();
-
-    //     // Handle file upload
-    //     $photoPath = $user->photo;
-    //     if ($request->hasFile('photo')) {
-    //         $photo = $request->file('photo');
-    //         $photoPath = $photo->store('photos', 'public');
-    //     }
-
-    //     // Update user details
-    //     $user->update([
-    //         'commune_id' => $request->commune_id,
-    //         'commune_id' => $request->commune_id, // Ajouter l'ID de la commune
-    //         'prenom' => $request->prenom,
-    //         'nom' => $request->nom,
-    //         'date_naissance' => $request->date_naissance,
-    //         'adresse' => $request->adresse,
-    //         'lieu_naissance' => $request->lieu_naissance,
-    //         'fonction' => $request->fonction,
-    //         'genre' => $request->genre,
-    //         'telephone' => $request->telephone,
-    //         'situation_matrimoniale' => $request->situation_matrimoniale,
-    //         'date_integration' => $request->date_integration,
-    //         'date_sortie' => $request->date_sortie,
-    //         'photo' => $photoPath,
-    //         'email' => $request->email,
-    //         'password' => $request->filled('password') ? Hash::make($request->password) : $user->password,
-    //     ]);
-
-    //     return response()->json([
-    //         'status' => true,
-    //         'message' => 'User details updated successfully',
-    //         'data' => [
-    //             'photo' => $photoPath
-    //         ]
-    //     ]);
-    // }
-
+ 
 
     public function update(UpdateUserRequest $request)
     {
