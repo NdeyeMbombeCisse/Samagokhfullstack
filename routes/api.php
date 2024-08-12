@@ -9,7 +9,6 @@ use App\Http\Controllers\CommuneController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\VoteController;
-use App\Http\Controllers\CommuneController;
 use App\Http\Controllers\CommentaireController;
 
 
