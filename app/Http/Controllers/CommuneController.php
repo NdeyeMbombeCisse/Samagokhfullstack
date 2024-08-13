@@ -10,13 +10,13 @@ use Illuminate\Http\Request;
 class CommuneController extends Controller
 {
 
-    function __construct()
-    {
-         $this->middleware('permission:commune-list|commune-create|commune-edit|commune-delete', ['only' => ['index','show']]);
-         $this->middleware('permission:commune-create', ['only' => ['create','store']]);
-         $this->middleware('permission:commune-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:commune-delete', ['only' => ['destroy']]);
-    }
+    // function __construct()
+    // {
+    //      $this->middleware('permission:commune-list|commune-create|commune-edit|commune-delete', ['only' => ['index','show']]);
+    //      $this->middleware('permission:commune-create', ['only' => ['create','store']]);
+    //      $this->middleware('permission:commune-edit', ['only' => ['edit','update']]);
+    //      $this->middleware('permission:commune-delete', ['only' => ['destroy']]);
+    // }
     /**
      * Display a listing of the resource.
      */
