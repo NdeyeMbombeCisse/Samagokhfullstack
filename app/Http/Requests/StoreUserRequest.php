@@ -20,6 +20,7 @@ class StoreUserRequest extends FormRequest
             'prenom' => 'required|string',
             'nom' => 'required|string',
             'date_naissance' => 'required|date',
+            'CNI' => 'required|string|size:13',
             'adresse' => 'required|string',
             'lieu_naissance' => 'required|string',
             'fonction' => 'nullable|in:eleve,bachelier,etudiant,diplome,mentor_certifie,profetionnel_reconvertit,retraite,chomeur',
