@@ -15,7 +15,7 @@ class UpdateUserRequest extends FormRequest
 
     public function rules()
     {
-        $userId = $this->route('id'); // Assurez-vous que votre route contient un paramètre 'id'
+        $userId = auth()->id(); // Obtenir l'ID de l'utilisateur authentifié
 
         return [
             'commune_id' => 'nullable|exists:communes,id',
@@ -27,7 +27,7 @@ class UpdateUserRequest extends FormRequest
             'fonction' => 'nullable|in:eleve,bachelier,etudiant,diplome,mentor_certifie,profetionnel_reconvertit,retraite,chomeur',
             'genre' => 'required|in:masculin,feminin',
             'telephone' => 'required|string|unique:users,telephone,' . $userId,
-            'situation_matriminiale' => 'required|in:marie,divorce,celibataire,veuve',
+            // 'situation_matrimoniale' => 'required|in:marie,divorce,celibataire,veuve',
             'date_integration' => 'nullable|date',
             'date_sortie' => 'nullable|date',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',

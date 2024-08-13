@@ -22,7 +22,7 @@ class UpdateCommentaireRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'contenu' => 'sometimes|string|max:500',
+            'contenu' => 'sometimes|required|string|max:500',
             'projet_id' => 'sometimes|exists:projets,id',
         ];
     }
