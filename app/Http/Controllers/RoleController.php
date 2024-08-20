@@ -13,22 +13,22 @@ use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
-    public function __construct()
-    {
-         $this->middleware('auth:api');
-        $this->middleware('permission:role-create|role-edit|role-delete', ['only' => ['index', 'show']]);
-        $this->middleware('permission:role-list', ['only' => ['index']]);
-        $this->middleware('permission:role-create', ['only' => ['store']]);
-        $this->middleware('permission:role-edit', ['only' => ['update']]);
-        $this->middleware('permission:role-delete', ['only' => ['destroy']]);
-    }
+    // public function __construct()
+    // {
+    //      $this->middleware('auth:api');
+    //     $this->middleware('permission:role-create|role-edit|role-delete', ['only' => ['index', 'show']]);
+    //     $this->middleware('permission:role-list', ['only' => ['index']]);
+    //     $this->middleware('permission:role-create', ['only' => ['store']]);
+    //     $this->middleware('permission:role-edit', ['only' => ['update']]);
+    //     $this->middleware('permission:role-delete', ['only' => ['destroy']]);
+    // }
 
     /**
      * Display a listing of the resource.
      */
     public function index(): JsonResponse
     {
-        $roles = Role::with('permissions')->orderBy('id', 'DESC')->paginate(3);
+        $roles = Role::with('permissions')->orderBy('id', 'ASC')->paginate(10);
         return response()->json($roles);
     }
 
@@ -83,14 +83,31 @@ class RoleController extends Controller
      */
     public function destroy(Role $role): JsonResponse
     {
-        if ($role->name === 'Super Admin') {
-            return response()->json(['message' => 'SUPER ADMIN ROLE CAN NOT BE DELETED'], 403);
-        }
-        if (auth()->user()->hasRole($role->name)) {
+        // Vérification si le rôle est "Super Admin"
+    if ($role->name === 'SuperAdmin') {
+        return response()->json(['message' => 'SUPER ADMIN ROLE CAN NOT BE DELETED'], 403);
+    }
+
+    // Vérification si l'utilisateur est authentifié
+    if ($user = auth()->user()) {
+        // Vérification si l'utilisateur a le rôle qu'il essaie de supprimer
+        if ($user->hasRole($role->name)) {
             return response()->json(['message' => 'CAN NOT DELETE SELF ASSIGNED ROLE'], 403);
         }
-
-        $role->delete();
-        return response()->json(['message' => 'Role is deleted successfully.']);
+    } else {
+        // Si l'utilisateur n'est pas authentifié, retourner une réponse d'erreur
+        return response()->json(['message' => "Unauthorized"], 401);
     }
+
+    // Suppression du rôle
+    $role->delete();
+    return response()->json(['message' => 'Role is deleted successfully.']);
+}
+
+//récupération des permissions par rapport aux roles
+public function getRolePermissions($roleId)
+{
+    $role = Role::findById($roleId);
+    return response()->json($role->permissions);
+}
 }

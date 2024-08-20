@@ -4,24 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Ville;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class VilleController extends Controller
 {
 
-    function __construct()
-    {
-         $this->middleware('permission:ville-list|ville-create|ville-edit|ville-delete', ['only' => ['index','show']]);
-         $this->middleware('permission:ville-create', ['only' => ['create','store']]);
-         $this->middleware('permission:ville-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:ville-delete', ['only' => ['destroy']]);
-    }
+    // function __construct()
+    // {
+    //      $this->middleware('permission:ville-list|ville-create|ville-edit|ville-delete', ['only' => ['index','show']]);
+    //      $this->middleware('permission:ville-create', ['only' => ['create','store']]);
+    //      $this->middleware('permission:ville-edit', ['only' => ['edit','update']]);
+    //      $this->middleware('permission:ville-delete', ['only' => ['destroy']]);
+    // }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index():JsonResponse
     {
-        return Ville::all();
-
+        $villes= Ville::all();
+        return response()->json(['data' => $villes]); // Assurez-vous que vous envoyez les données sous la clé 'data'
     }
 
     /**

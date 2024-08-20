@@ -1,21 +1,22 @@
 <?php
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ProjetController;
-use App\Http\Controllers\VilleController;
-use App\Http\Controllers\CommuneController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\VoteController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\VilleController;
+use App\Http\Controllers\ProjetController;
+use App\Http\Controllers\CommuneController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\CommentaireController;
 
 
 //spaties congiguration
   
 //Route of the middleware Spaties  
-Route::group(['middleware' => ['auth']], function() {
+// Route::group(['middleware' => ['auth']], function() {
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('users', AdminController::class);
 
@@ -25,7 +26,15 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('users/{id}/restore', [AuthController::class, 'restore']);
     //route update profil
     Route::put('update-profile', [AuthController::class, 'update']);
- });
+    //permissions
+    Route::get('/permissions', [PermissionController::class, 'getPermissions']);
+    //récupération des permissions par rapport aux roles
+    Route::get('/roles/{roleId}/permissions', [RoleController::class, 'getRolePermissions']);
+    // nombre d'utilisateurs 
+    Route::get('compteUser', [AdminController::class, 'getTotalUsers']);
+    Route::get('compteCommune', [CommuneController::class, 'getTotalCommunes']);
+
+//  });
 
 
 
