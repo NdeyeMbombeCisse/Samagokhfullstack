@@ -71,4 +71,11 @@ class AdminController extends Controller
             'message' => 'User deleted successfully'
         ]);
     }
+
+    public function getTotalUsers(): JsonResponse
+    {
+        $totalUsers = User::count();
+
+        return response()->json($totalUsers);
+    }
 }

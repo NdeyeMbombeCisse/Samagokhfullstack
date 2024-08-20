@@ -60,4 +60,11 @@ class CommuneController extends Controller
         $commune->delete();
         return response()->json(null, 204);
     }
+
+    public function getTotalCommunes()
+    {
+        $totalCommunes = Commune::count();
+
+        return response()->json($totalCommunes);
+    }
 }

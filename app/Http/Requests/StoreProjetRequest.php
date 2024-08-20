@@ -24,7 +24,7 @@ class StoreProjetRequest extends FormRequest
             'statut' => 'required|boolean',
             'etat' => 'required|boolean',
             'budget' => 'required|string|max:255',
-            'user_id' => 'required|numeric',
+            // 'user_id' => 'required|numeric',
         ];
     }
 }
