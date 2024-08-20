@@ -120,56 +120,52 @@ foreach ($defaultPermissions as $permissionName) {
 
  
 
-    public function update(UpdateUserRequest $request)
-    {
-        // Trouver l'utilisateur authentifié
-        $user = auth()->user();
-    
-        if (!$user) {
-            return response()->json([
-                'status' => false,
-                'message' => 'User not authenticated',
-            ], 401);
-        }
-    
-        // Gestion de l'upload de la photo
-        $photoPath = $user->photo; // Conserve le chemin actuel de la photo si aucune nouvelle photo n'est uploadée
-        if ($request->hasFile('photo')) {
+   public function update(UpdateUserRequest $request)
+{
+    $user = auth()->user();
 
-            if (File::exists(public_path("storage/" . $user->photo))) {
-                File::delete(public_path($user->photo));
-            }
-            $photo = $request->file('photo');
-            $photoPath = $photo->store('photos', 'public'); // Stocke la nouvelle photo
-        }
-    
-        // Mise à jour des détails de l'utilisateur
-        $user->update([
-            'commune_id' => $request->commune_id,
-            'prenom' => $request->prenom,
-            'nom' => $request->nom,
-            'date_naissance' => $request->date_naissance,
-            'adresse' => $request->adresse,
-            'lieu_naissance' => $request->lieu_naissance,
-            'fonction' => $request->fonction,
-            'genre' => $request->genre,
-            'telephone' => $request->telephone,
-            'date_integration' => $request->date_integration,
-            'date_sortie' => $request->date_sortie,
-            'photo' => $photoPath,
-            'email' => $request->email,
-            'password' => $request->filled('password') ? Hash::make($request->password) : $user->password,
-        ]);
-    
+    if (!$user) {
         return response()->json([
+            'status' => false,
+            'message' => 'User not authenticated',
+        ], 401);
+    }
+
+    // Gestion de l'upload de la photo
+    $photoPath = $user->photo; // Conserve le chemin actuel de la photo si aucune nouvelle photo n'est uploadée
+    if ($request->hasFile('photo')) {
+        if (File::exists(public_path("storage/" . $user->photo))) {
+            File::delete(public_path($user->photo));
+        }
+        $photo = $request->file('photo');
+        $photoPath = $photo->store('photos', 'public'); // Stocke la nouvelle photo
+    }
+
+    // Mise à jour des détails de l'utilisateur
+    $user->update([
+        'commune_id' => $request->commune_id,
+        'prenom' => $request->prenom,
+        'nom' => $request->nom,
+        'date_naissance' => $request->date_naissance,
+        'adresse' => $request->adresse,
+        'lieu_naissance' => $request->lieu_naissance,
+        'fonction' => $request->fonction,
+        'genre' => $request->genre,
+        'telephone' => $request->telephone,
+        'date_integration' => $request->date_integration,
+        'date_sortie' => $request->date_sortie,
+        'photo' => $photoPath,
+        'email' => $request->email,
+        'password' => $request->filled('password') ? Hash::make($request->password) : $user->password,
+    ]);
+
+    return response()->json([
         'status' => true,
         'message' => 'Profil mis à jour avec succès',
         'data' => $user
     ]);
+}
 
-      
-    }
-    
 
 
 
