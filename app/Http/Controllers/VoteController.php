@@ -56,7 +56,7 @@ class VoteController extends Controller
         'message' => 'Vote mis à jour avec succès',
         'data' => $vote
     ], 200);
-    
+
 }
 
     // DELETE: /api/votes/{vote}

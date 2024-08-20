@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
             'commune_id' => 2,
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
-            'remember_token' => Str::random(10), 
+            'remember_token' => Str::random(10),
     ]);
     }
 }

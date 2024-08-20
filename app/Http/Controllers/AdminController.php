@@ -29,7 +29,7 @@ class AdminController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $data = User::with('roles')->latest()->paginate($perPage);
-  
+
         return response()->json($data);
     }
 
@@ -38,19 +38,19 @@ class AdminController extends Controller
        {
            $user = new User();
        $user->fill($request->validated());
-   
+
        if ($request->hasFile('photo')) {
            $photo = $request->file('photo');
            $user->photo = $photo->store('users', 'public');
        }
-   
+
        $user->password = Hash::make($request->password);
        $user->save();
-   
+
        // Attribuer le rôle "user"
        $userRole = Role::findByName('maire');
        $user->assignRole($userRole);
-   
+
        return response()->json([
            'status' => true,
            'message' => 'User registered successfully and assigned user role',
@@ -60,13 +60,13 @@ class AdminController extends Controller
            ]
        ], 201);
        }
-    
+
 
     public function destroy($id): JsonResponse
     {
         $user = User::findOrFail($id);
         $user->delete();
-        
+
         return response()->json([
             'message' => 'User deleted successfully'
         ]);

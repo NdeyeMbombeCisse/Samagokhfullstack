@@ -62,7 +62,7 @@ class CommentaireController extends Controller
         ], 200);
     }
 
-    
+
 
 
     // DELETE: /api/commentaires/{id}
