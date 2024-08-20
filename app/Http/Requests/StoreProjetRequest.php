@@ -16,15 +16,16 @@ class StoreProjetRequest extends FormRequest
     {
         return [
             'titre' => 'required|string|max:255',
+            'commune_id' => 'required|integer',
             'description' => 'required|string',
             'objectif' => 'required|string',
             'attente' => 'required|string',
             'cible' => 'required|string|max:255',
             'categorie' => 'required|in:education,assainissement,jeunesse,sport,divertissement',
-            'statut' => 'required|boolean',
-            'etat' => 'required|boolean',
-            'budget' => 'required|string|max:255',
-            // 'user_id' => 'required|numeric',
+            'statut' => 'required|boolean', // ou 'required|integer' si vous utilisez 0 ou 1
+            'etat' => 'required|boolean', // ou 'required|integer' si vous utilisez 0 ou 1
+            'budget' => 'required|numeric', // ou 'required|string|max:255' si vous utilisez des chaînes
+            'image' => 'nullable|string|max:255',
         ];
     }
 }

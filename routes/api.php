@@ -14,10 +14,9 @@ use App\Http\Controllers\CommentaireController;
 
 
 //spaties congiguration
-  
-//Route of the middleware Spaties  
-// Route::group(['middleware' => ['auth']], function() {
-    Route::apiResource('roles', RoleController::class);
+
+//Route of the middleware Spaties
+Route::group(['middleware' => ['auth']], function() {
     Route::apiResource('users', AdminController::class);
 
     //refrech Token
@@ -27,16 +26,22 @@ use App\Http\Controllers\CommentaireController;
     //route update profil
     Route::put('update-profile', [AuthController::class, 'update']);
     //permissions
-    Route::get('/permissions', [PermissionController::class, 'getPermissions']);
+    // Route::get('/permissions', [PermissionController::class, 'getPermissions']);
     //récupération des permissions par rapport aux roles
-    Route::get('/roles/{roleId}/permissions', [RoleController::class, 'getRolePermissions']);
-    // nombre d'utilisateurs 
+    // Route::get('/roles/{roleId}/permissions', [RoleController::class, 'getRolePermissions']);
+    // nombre d'utilisateurs
     Route::get('compteUser', [AdminController::class, 'getTotalUsers']);
     Route::get('compteCommune', [CommuneController::class, 'getTotalCommunes']);
 
-//  });
+ });
 
 
+Route::middleware('auth:api')->group(function () {
+    Route::get('permissions', [PermissionController::class, 'getPermissions'])->middleware('can:view-any,' . Spatie\Permission\Models\Permission::class);
+    Route::get('/roles/{roleId}/permissions', [RoleController::class, 'getRolePermissions'])->middleware('can:view-any,' . Spatie\Permission\Models\Permission::class);
+    Route::apiResource('roles', RoleController::class)->middleware('can:view-any,' . Spatie\Permission\Models\Permission::class);
+    Route::apiResource('users', AdminController::class);
+});
 
 
 //Login , register and logout
@@ -87,3 +92,10 @@ Route::get('notifications', function () {
     $user = Auth::user();
     return response()->json($user->notifications, 200);
 });
+
+
+
+
+
+Route::put('users/{id}/roles', [AdminController::class, 'updateRoles'])
+->middleware('permission:admin-edit');

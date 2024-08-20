@@ -6,20 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Arr;
 use Illuminate\Http\JsonResponse;
 
 class AdminController extends Controller
 {
-    // function __construct()
-    // {
-    //      $this->middleware('permission:admin-list|admin-create|admin-edit|admin-delete', ['only' => ['index','show']]);
-    //      $this->middleware('permission:admin-create', ['only' => ['create','store']]);
-    //      $this->middleware('permission:admin-edit', ['only' => ['edit','update']]);
-    //      $this->middleware('permission:admin-delete', ['only' => ['destroy']]);
-    // }
+    function __construct()
+    {
+        $this->middleware('permission:admin-list|admin-create|admin-edit|admin-delete', ['only' => ['index', 'show']]);
+        $this->middleware('permission:admin-create', ['only' => ['store']]);
+        $this->middleware('permission:admin-edit', ['only' => ['edit', 'update', 'updateRoles']]);
+        $this->middleware('permission:admin-delete', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -33,34 +32,55 @@ class AdminController extends Controller
         return response()->json($data);
     }
 
-    //Inscrire un Maire sur le platforme
-       public function store(StoreUserRequest $request)
-       {
-           $user = new User();
-       $user->fill($request->validated());
+    // Inscrire un Maire sur la plateforme
+    public function store(StoreUserRequest $request): JsonResponse
+    {
+        $user = new User();
+        $user->fill($request->validated());
 
-       if ($request->hasFile('photo')) {
-           $photo = $request->file('photo');
-           $user->photo = $photo->store('users', 'public');
-       }
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $user->photo = $photo->store('users', 'public');
+        }
 
-       $user->password = Hash::make($request->password);
-       $user->save();
+        $user->password = Hash::make($request->password);
+        $user->save();
 
-       // Attribuer le rôle "user"
-       $userRole = Role::findByName('maire');
-       $user->assignRole($userRole);
+        // Attribuer le rôle "maire"
+        $userRole = Role::findByName('maire');
+        $user->assignRole($userRole);
 
-       return response()->json([
-           'status' => true,
-           'message' => 'User registered successfully and assigned user role',
-           'data' => [
-               'user' => $user,
-               'photo' => $user->photo
-           ]
-       ], 201);
-       }
+        return response()->json([
+            'status' => true,
+            'message' => 'User registered successfully and assigned user role',
+            'data' => [
+                'user' => $user,
+                'photo' => $user->photo
+            ]
+        ], 201);
+    }
 
+    // Modifier les rôles d'un utilisateur
+    public function updateRoles(Request $request, $id): JsonResponse
+    {
+        $user = User::findOrFail($id);
+
+        // Validation des rôles
+        $request->validate([
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,name', // Assurez-vous que les rôles existent
+        ]);
+
+        // Synchroniser les rôles de l'utilisateur
+        $roles = $request->input('roles');
+        $user->syncRoles($roles);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User roles updated successfully',
+            'data' => $user->fresh('roles') // Recharger les rôles de l'utilisateur
+        ]);
+    }
 
     public function destroy($id): JsonResponse
     {

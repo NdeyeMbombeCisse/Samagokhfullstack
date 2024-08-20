@@ -36,19 +36,43 @@ class RoleController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreRoleRequest $request): JsonResponse
-    {
-        $role = Role::create(['name' => $request->name]);
-    
+{
+    $role = Role::create(['name' => $request->name]);
+
     if ($request->has('permissions') && is_array($request->permissions)) {
         $permissions = Permission::whereIn('id', $request->permissions)->get(['name'])->toArray();
         $role->syncPermissions($permissions);
     }
-    
+
+    // Assign default permissions to the 'user' role
+    if ($role->name === 'user') {
+        $defaultPermissions = [
+            'project-list',
+            'project-create',
+            'project-edit',
+            'project-delete',
+            'vote-list',
+            'vote-create',
+            'vote-edit',
+            'vote-delete',
+            'commentaire-list',
+            'commentaire-create',
+            'commentaire-edit',
+            'commentaire-delete',
+        ];
+
+        foreach ($defaultPermissions as $permissionName) {
+            $permission = Permission::findByName($permissionName);
+            $role->givePermissionTo($permission);
+        }
+    }
+
     return response()->json([
         'message' => 'New role is added successfully.',
         'role' => $role
     ], 201);
-    }
+}
+
 
     /**
      * Display the specified resource.

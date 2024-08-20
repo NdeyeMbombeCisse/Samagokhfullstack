@@ -19,68 +19,53 @@ class AuthController extends Controller
     public function register(StoreUserRequest $request)
     {
         $user = new User();
-    $user->fill($request->validated());
-        //upload user's profil
-    if ($request->hasFile('photo')) {
-        $photo = $request->file('photo');
-        $user->photo = $photo->store('users', 'public');
+        $user->fill($request->validated());
+
+        // Upload user's profile photo
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $user->photo = $photo->store('users', 'public');
+        }
+
+        // Hash password
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Assign default role
+        $userRole = Role::findByName('user');
+        $user->assignRole($userRole);
+
+        // Assign default permissions
+        $defaultPermissions = [
+            'project-list',
+            'project-create',
+            'project-edit',
+            'project-delete',
+            'vote-list',
+            'vote-create',
+            'vote-edit',
+            'vote-delete',
+            'commentaire-list',
+            'commentaire-create',
+            'commentaire-edit',
+            'commentaire-delete',
+        ];
+
+        foreach ($defaultPermissions as $permissionName) {
+            $permission = Permission::findByName($permissionName);
+            $user->givePermissionTo($permission);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User registered successfully and assigned user role',
+            'data' => [
+                'user' => $user,
+                'photo' => $user->photo
+            ]
+        ], 201);
     }
-    //hashed password
-    $user->password = Hash::make($request->password);
-    //save the data of the user
-    $user->save();
 
-  // Attribuer le rôle "user"
-$userRole = Role::findByName('user');
-$user->assignRole($userRole);
-
-// Attribuer les permissions par défaut
-$defaultPermissions = [
-    //Project-permission
-    'project-list',
-    'project-create',
-    'project-edit',
-    'project-delete',
-    // //role-permission
-    // 'role-list',
-    // 'role-create',
-    // 'role-edit',
-    // 'role-delete',
-    //project
-    'project-list',
-    'project-create',
-    'project-edit',
-    'project-delete',
-
-     //vote
-     'vote-list',
-     'vote-create',
-     'vote-edit',
-     'vote-delete',
-
-
-      //commentaire
-      'commentaire-list',
-      'commentaire-create',
-      'commentaire-edit',
-      'commentaire-delete',
-
-];
-
-foreach ($defaultPermissions as $permissionName) {
-    $permission = Permission::findByName($permissionName);
-    $user->givePermissionTo($permission);
-}
-    //response json for the processus save
-    return response()->json([
-        'status' => true,
-        'message' => 'User registered successfully and assigned user role',
-        'data' => [
-            'user' => $user,
-            'photo' => $user->photo
-        ]
-    ], 201);
-    }
 
     // Login API - POST (email, password)
     public function login(Request $request)
@@ -118,7 +103,7 @@ foreach ($defaultPermissions as $permissionName) {
         return response()->json(["message" => "Déconnexion réussie"]);
     }
 
- 
+
 
    public function update(UpdateUserRequest $request)
 {
