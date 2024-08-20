@@ -8,19 +8,18 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Requests\StoreProjetRequest;
 use App\Http\Requests\UpdateProjetRequest;
 use App\Notifications\NewProjectNotification;
-
+use Illuminate\Support\Facades\Notification;
 
 class ProjetController extends Controller
 {
-
+    // Uncomment and configure the middleware if needed
     // function __construct()
     // {
-    //      $this->middleware('permission:project-list|project-create|project-edit|project-delete', ['only' => ['index','show']]);
-    //      $this->middleware('permission:project-create', ['only' => ['create','store']]);
-    //      $this->middleware('permission:project-edit', ['only' => ['edit','update']]);
-    //      $this->middleware('permission:project-delete', ['only' => ['destroy']]);
+    //     $this->middleware('permission:project-list|project-create|project-edit|project-delete', ['only' => ['index', 'show']]);
+    //     $this->middleware('permission:project-create', ['only' => ['store']]);
+    //     $this->middleware('permission:project-edit', ['only' => ['update']]);
+    //     $this->middleware('permission:project-delete', ['only' => ['destroy']]);
     // }
-
 
     /**
      * Display a listing of the resource.
@@ -32,29 +31,21 @@ class ProjetController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreProjetRequest $request): JsonResponse
-{
-    $projet = Projet::create($request->validated());
+    {
+        try {
+            $projet = Projet::create($request->validated());
 
-    // Envoyer la notification à tous les utilisateurs
-    $users = User::all();
-    foreach ($users as $user) {
-        $user->notify(new NewProjectNotification($projet));
+            // Send notification to all users
+            Notification::send(User::all(), new NewProjectNotification($projet));
+
+            return response()->json($projet, 201); // 201 Created
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Unable to create project', 'message' => $e->getMessage()], 500); // 500 Internal Server Error
+        }
     }
-
-    return response()->json($projet, 201); // 201 Created
-}
-
 
     /**
      * Display the specified resource.
@@ -65,14 +56,8 @@ class ProjetController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-
-
-    /**
      * Update the specified resource in storage.
      */
-
     public function update(UpdateProjetRequest $request, Projet $projet): JsonResponse
     {
         $projet->update($request->validated());
