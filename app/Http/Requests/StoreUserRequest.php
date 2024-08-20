@@ -25,7 +25,7 @@ class StoreUserRequest extends FormRequest
             'fonction' => 'nullable|in:eleve,bachelier,etudiant,diplome,mentor_certifie,profetionnel_reconvertit,retraite,chomeur',
             'genre' => 'required|in:masculin,feminin',
             'telephone' => 'required|string|unique:users',
-            'situation_matrimoniale' => 'required|in:marie,divorce,celibataire,veuve',
+            // 'situation_matrimoniale' => 'required|in:marie,divorce,celibataire,veuve',
             'date_integration' => 'nullable|date',
             'date_sortie' => 'nullable|date',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',

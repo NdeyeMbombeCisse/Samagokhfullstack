@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -14,51 +15,69 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            //Role
+            // Role
             'role-list',
             'role-create',
             'role-edit',
             'role-delete',
-
-            //project
+            // Project
             'project-list',
             'project-create',
             'project-edit',
             'project-delete',
-
-            //ville
+            // Ville
             'ville-list',
             'ville-create',
             'ville-edit',
             'ville-delete',
+            // Vote
+            'vote-list',
+            'vote-create',
+            'vote-edit',
+            'vote-delete',
+            // Commune
+            'commune-list',
+            'commune-create',
+            'commune-edit',
+            'commune-delete',
+            // Commentaire
+            'commentaire-list',
+            'commentaire-create',
+            'commentaire-edit',
+            'commentaire-delete',
+            // Admin
+            'admin-list',
+            'admin-create',
+            'admin-edit',
+            'admin-delete',
+        ];
 
-             //vote
-             'vote-list',
-             'vote-create',
-             'vote-edit',
-             'vote-delete',
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
+        }
 
-              //commune
-              'commune-list',
-              'commune-create',
-              'commune-edit',
-              'commune-delete',
+        // Créer ou récupérer le rôle "user"
+        $userRole = Role::firstOrCreate(['name' => 'user']);
 
-              //commentaire
-              'commentaire-list',
-              'commentaire-create',
-              'commentaire-edit',
-              'commentaire-delete',
+        // Définir les permissions par défaut pour le rôle "user"
+        $defaultUserPermissions = [
+            'project-list',
+            'project-create',
+            'project-edit',
+            'project-delete',
+            'vote-list',
+            'vote-create',
+            'vote-edit',
+            'vote-delete',
+            'commentaire-list',
+            'commentaire-create',
+            'commentaire-edit',
+            'commentaire-delete',
+        ];
 
-              //admin
-              'admin-list',
-              'admin-create',
-              'admin-edit',
-              'admin-delete',
-         ];
-         
-         foreach ($permissions as $permission) {
-              Permission::create(['name' => $permission]);
-         }
+        // Assigner les permissions par défaut au rôle "user"
+        foreach ($defaultUserPermissions as $permission) {
+            $userRole->givePermissionTo($permission);
+        }
     }
 }
