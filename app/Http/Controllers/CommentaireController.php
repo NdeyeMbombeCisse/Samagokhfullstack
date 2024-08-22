@@ -12,13 +12,7 @@ use Illuminate\Http\JsonResponse;
 class CommentaireController extends Controller
 {
 
-    function __construct()
-    {
-         $this->middleware('permission:commentaire-list|commentaire-create|commentaire-edit|commentaire-delete', ['only' => ['index','show']]);
-         $this->middleware('permission:commentaire-create', ['only' => ['create','store']]);
-         $this->middleware('permission:commentaire-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:commentaire-delete', ['only' => ['destroy']]);
-    }
+
     // GET: /api/commentaires
     public function index()
     {

@@ -11,13 +11,7 @@ use Illuminate\Http\JsonResponse;
 
 class AdminController extends Controller
 {
-    function __construct()
-    {
-        $this->middleware('permission:admin-list|admin-create|admin-edit|admin-delete', ['only' => ['index', 'show']]);
-        $this->middleware('permission:admin-create', ['only' => ['store']]);
-        $this->middleware('permission:admin-edit', ['only' => ['edit', 'update', 'updateRoles']]);
-        $this->middleware('permission:admin-delete', ['only' => ['destroy']]);
-    }
+
 
     /**
      * Display a listing of the resource.

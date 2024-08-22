@@ -37,9 +37,9 @@ Route::group(['middleware' => ['auth']], function() {
 
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('permissions', [PermissionController::class, 'getPermissions'])->middleware('can:view-any,' . Spatie\Permission\Models\Permission::class);
-    Route::get('/roles/{roleId}/permissions', [RoleController::class, 'getRolePermissions'])->middleware('can:view-any,' . Spatie\Permission\Models\Permission::class);
-    Route::apiResource('roles', RoleController::class)->middleware('can:view-any,' . Spatie\Permission\Models\Permission::class);
+    // Route::get('permissions', [PermissionController::class, 'getPermissions'])->middleware('can:view-any,' . Spatie\Permission\Models\Permission::class);
+    // Route::get('/roles/{roleId}/permissions', [RoleController::class, 'getRolePermissions'])->middleware('can:view-any,' . Spatie\Permission\Models\Permission::class);
+    // Route::apiResource('roles', RoleController::class)->middleware('can:view-any,' . Spatie\Permission\Models\Permission::class);
     Route::apiResource('users', AdminController::class);
 });
 

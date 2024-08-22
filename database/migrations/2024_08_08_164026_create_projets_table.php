@@ -22,6 +22,11 @@ return new class extends Migration
             $table->string('cible');
             $table->enum('categorie',['education','assainissement','jeunesse','sport','divertissement']);
             $table->boolean('statut');
+              if (Schema::hasColumn('projets', 'commune_id')) {
+                $table->dropForeign(['commune_id']);
+                $table->dropColumn('commune_id');
+            }
+
             $table->boolean('etat');
             $table->string('budget');
             $table->timestamps();

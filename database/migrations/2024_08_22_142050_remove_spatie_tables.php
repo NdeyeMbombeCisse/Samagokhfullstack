@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::table('users', function (Blueprint $table) {
-        //     $table->string('CNI', 13)->unique();
-        // });
+        Schema::dropIfExists('role_has_permissions');
+Schema::dropIfExists('model_has_roles');
+Schema::dropIfExists('model_has_permissions');
+Schema::dropIfExists('roles');
+Schema::dropIfExists('permissions');
     }
 
     /**
@@ -21,7 +23,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Schema::table('users', function (Blueprint $table) {
+        // Schema::table('roles', function (Blueprint $table) {
         //     //
         // });
     }

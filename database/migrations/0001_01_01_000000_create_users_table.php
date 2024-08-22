@@ -12,46 +12,48 @@ return new class extends Migration
      */
     public function up(): void
     {
-    //     if (Schema::hasTable('communes')) {
-    //         Schema::create('users', function (Blueprint $table) {
-    //             $table->id();
-    //             $table->string('prenom')->nullable();
-    //             $table->string('nom');
-    //             $table->date('date_naissance');
-    //             $table->string('adresse');
-    //             $table->string('lieu_naissance');
-    //             $table->enum('fonction', ['eleve', 'bachelier', 'etudiant', 'diplome', 'mentor_certifie', 'profetionnel_reconvertit', 'retraite', 'chomeur'])->nullable();
-    //             $table->enum('genre', ['masculin', 'feminin']);
-    //             $table->string('telephone')->unique();
-    //             $table->enum('situation_matrimoniale', ['marie', 'divorce', 'celibataire', 'veuve']);
-    //             $table->date('date_integration')->nullable();
-    //             $table->date('date_sortie')->nullable();
-    //             $table->string('photo')->nullable();
-    //             $table->string('img')->nullable();
-    //             $table->string('email')->unique();
-    //             $table->string('password');
-    //             $table->foreignIdFor(Commune::class)->constrained()->onDelete('cascade');
-    //             $table->timestamp('email_verified_at')->nullable();
-    //             $table->rememberToken();
-    //             $table->timestamps();
-    //             $table->softDeletes();
-    //         });
+        if (Schema::hasTable('communes')) {
+            Schema::create('users', function (Blueprint $table) {
+                $table->id();
+                $table->string('prenom')->nullable();
+                $table->string('nom');
+                $table->enum('role',['admin','maire','habitant'])->default('habitant');
+                $table->date('date_naissance');
+                $table->string('adresse');
+                $table->string('CNI', 13)->unique();
+                $table->string('lieu_naissance');
+                $table->enum('fonction', ['eleve', 'bachelier', 'etudiant', 'diplome', 'mentor_certifie', 'profetionnel_reconvertit', 'retraite', 'chomeur'])->nullable();
+                $table->enum('genre', ['masculin', 'feminin']);
+                $table->string('telephone')->unique();
+                $table->enum('situation_matrimoniale', ['marie', 'divorce', 'celibataire', 'veuve']);
+                $table->date('date_integration')->nullable();
+                $table->date('date_sortie')->nullable();
+                $table->string('photo')->nullable();
+                $table->string('img')->nullable();
+                $table->string('email')->unique();
+                $table->string('password');
+                $table->foreignIdFor(Commune::class)->constrained()->onDelete('cascade');
+                $table->timestamp('email_verified_at')->nullable();
+                $table->rememberToken();
+                $table->timestamps();
+                $table->softDeletes();
+            });
 
-    //         Schema::create('password_reset_tokens', function (Blueprint $table) {
-    //             $table->string('email')->primary();
-    //             $table->string('token');
-    //             $table->timestamp('created_at')->nullable();
-    //         });
+            Schema::create('password_reset_tokens', function (Blueprint $table) {
+                $table->string('email')->primary();
+                $table->string('token');
+                $table->timestamp('created_at')->nullable();
+            });
 
-    //         Schema::create('sessions', function (Blueprint $table) {
-    //             $table->string('id')->primary();
-    //             $table->foreignId('user_id')->nullable()->index();
-    //             $table->string('ip_address', 45)->nullable();
-    //             $table->text('user_agent')->nullable();
-    //             $table->longText('payload');
-    //             $table->integer('last_activity')->index();
-    //         });
-    //     }
+            Schema::create('sessions', function (Blueprint $table) {
+                $table->string('id')->primary();
+                $table->foreignId('user_id')->nullable()->index();
+                $table->string('ip_address', 45)->nullable();
+                $table->text('user_agent')->nullable();
+                $table->longText('payload');
+                $table->integer('last_activity')->index();
+            });
+        }
     }
 
     /**
@@ -59,8 +61,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-    //     Schema::dropIfExists('users');
-    //     Schema::dropIfExists('password_reset_tokens');
-    //     Schema::dropIfExists('sessions');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('sessions');
     }
 };

@@ -9,7 +9,7 @@ use App\Policies\PermissionPolicy;
 class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
-        Permission::class => PermissionPolicy::class,
+        // Permission::class => PermissionPolicy::class,
     ];
 
     public function boot()
