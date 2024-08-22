@@ -87,14 +87,17 @@ class AuthController extends Controller
                 "message" => "Invalid login details"
             ]);
         }
+        
 
         return response()->json([
             "status" => true,
             "message" => "User logged in successfully",
             "token" => $token,
-            "expires_in" => auth()->factory()->getTTL() * 60
+            "user" => auth()->user(),
+             "expires_in" => auth()->factory()->getTTL() * 60
         ]);
     }
+
 
     //DECONNEXION
     public function logout()
