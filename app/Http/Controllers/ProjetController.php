@@ -40,7 +40,8 @@ class ProjetController extends Controller
                 return response()->json(['message' => 'Aucun projet disponible pour votre commune.'], 200); // 200 OK
             }
 
-            return response()->json($projets, 200); // 200 OK
+            // return response()->json($projets, 200); // 200 OK
+            return $this->Response('Liste des projets', $projets);
         }
 
         // Si l'utilisateur n'est pas connecté, retourner une réponse d'erreur
