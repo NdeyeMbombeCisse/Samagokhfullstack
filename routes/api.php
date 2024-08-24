@@ -15,6 +15,9 @@ use App\Http\Controllers\CommentaireController;
 
 //spaties congiguration
 
+Route::patch('/projets-statut/{projet}/', [ProjetController::class, 'updateStatut']);
+
+
 //Route of the middleware Spaties
 Route::group(['middleware' => ['auth']], function() {
     Route::apiResource('users', AdminController::class);
@@ -92,6 +95,26 @@ Route::get('notifications', function () {
     $user = Auth::user();
     return response()->json($user->notifications, 200);
 });
+
+
+// mis a jour du statut
+
+// recuperation des projtes publies et non publies
+ Route::get('/projets/publies', [ProjetController::class, 'getProjetsPublies']);
+Route::get('/projets/non-publies', [ProjetController::class, 'getProjetsNonPublies']);
+
+// les projets soumis
+Route::get('projets/publies/{userId}', [ProjetController::class, 'getPublishedProjectsByUser']);
+
+// routes qui affiche le nombre de projets
+// Exemple pour Laravel
+Route::get('/projets/count', [ProjetController::class, 'countTotalProjets']);
+Route::get('/projets/publies/count', [ProjetController::class, 'countProjetsPublies']);
+// publication
+
+
+
+
 
 
 
