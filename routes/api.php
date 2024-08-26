@@ -61,13 +61,6 @@ Route::delete('delete-account/{id}', [AuthController::class, 'softDelete']);
 
 
 
-//gestion projet
-Route::get('projets', [ProjetController::class, 'index'])->name('projets.index');
-Route::get('details/projet/{projet}', [ProjetController::class, 'show'])->name('projets.show');
-Route::put('update/projet/{projet}', [ProjetController::class, 'update'])->name('projets.update');
-Route::post('add/projets', [ProjetController::class, 'store'])->name('projets.store');
-Route::delete('delete/projets/{projet}', [ProjetController::class, 'destroy'])->name('projets.destroy');
-
 // routes pour gerer les commentaires
 Route::apiResource('commentaires', CommentaireController::class);
 // route pour vote
@@ -95,7 +88,18 @@ Route::get('notifications', function () {
 
 
 
-
+Route::middleware(['auth'])->group(function () {
+    Route::get('/projets/statistics', [ProjetController::class, 'statistics'])->name('projets.statistics');
+});
 
 Route::put('users/{id}/roles', [AdminController::class, 'updateRoles'])
 ->middleware('permission:admin-edit');
+
+
+
+//gestion projet
+Route::get('projets', [ProjetController::class, 'index'])->name('projets.index');
+Route::get('details/projet/{projet}', [ProjetController::class, 'show'])->name('projets.show');
+Route::put('update/projet/{projet}', [ProjetController::class, 'update'])->name('projets.update');
+Route::post('add/projets', [ProjetController::class, 'store'])->name('projets.store');
+Route::delete('delete/projets/{projet}', [ProjetController::class, 'destroy'])->name('projets.destroy');

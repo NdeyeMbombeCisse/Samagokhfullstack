@@ -96,4 +96,36 @@ public function store(StoreProjetRequest $request): JsonResponse
         $projet->delete();
         return response()->json(null, 204); // 204 No Content
     }
+    public function statistics(): JsonResponse
+{
+    $user = Auth::user();
+
+    // Vérifier si l'utilisateur est connecté et qu'il a le rôle de "maire"
+    if ($user && $user->role === 'habitant') {
+        // Obtenir l'ID de la commune de l'utilisateur
+        $communeId = $user->commune_id;
+
+        // Compter les projets selon leur statut
+        $totalProjects = Projet::where('commune_id', $communeId)->count();
+        $submittedProjects = Projet::where('commune_id', $communeId)->where('statut', 'soumis')->count();
+        $approvedProjects = Projet::where('commune_id', $communeId)->where('statut', 'approuvé')->count();
+        $disapprovedProjects = Projet::where('commune_id', $communeId)->where('statut', 'désapprouvé')->count();
+        $pendingProjects = Projet::where('commune_id', $communeId)->where('statut', 'en attente')->count();
+
+        // Préparer les statistiques dans un tableau associatif
+        $statistics = [
+            'total' => $totalProjects,
+            'soumis' => $submittedProjects,
+            'approuvé' => $approvedProjects,
+            'désapprouvé' => $disapprovedProjects,
+            'en attente' => $pendingProjects,
+        ];
+
+        return response()->json($statistics, 200);
+    }
+
+    // Retourner une réponse d'erreur si l'utilisateur n'a pas les autorisations nécessaires
+    return response()->json(['error' => 'Unauthorized'], 401);
+}
+
 }
