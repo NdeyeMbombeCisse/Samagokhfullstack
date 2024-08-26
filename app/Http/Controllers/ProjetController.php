@@ -128,4 +128,26 @@ public function store(StoreProjetRequest $request): JsonResponse
     return response()->json(['error' => 'Unauthorized'], 401);
 }
 
+
+public function getVoteStatistics(Projet $projet): JsonResponse
+{
+    // Supposons que vous avez une relation définie entre Projet et Vote
+    // et que chaque vote a un champ 'statut' (true ou false)
+
+    $votes = $projet->votes; // Les votes associés à ce projet
+
+    // Calcul des votes totaux, approuvés et désapprouvés
+    $totalVotes = $votes->count();
+    $approvedVotes = $votes->where('statut', true)->count();  // Votes avec statut true
+    $disapprovedVotes = $votes->where('statut', false)->count(); // Votes avec statut false
+
+    return response()->json([
+        'vote_total' => $totalVotes,
+        'vote_approve' => $approvedVotes,
+        'vote_disapprove' => $disapprovedVotes
+    ], 200);
+}
+
+
+
 }
