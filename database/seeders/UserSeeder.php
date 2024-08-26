@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            "commune_id"=> 3,
+            "commune_id"=> 1,
             "prenom"=> "Bouna",
             "nom"=> "Drame",
             "CNI"=>"1793201800002",

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Models\Projet;
@@ -25,27 +26,69 @@ class ProjetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
-    {
-        // Récupérer l'utilisateur connecté
-        $user = Auth::user();
+    // public function index(): JsonResponse
+    // {
+    //     // Récupérer l'utilisateur connecté
+    //     $user = Auth::user();
 
-        // Vérifier si l'utilisateur est connecté
-        if ($user) {
-            // Filtrer les projets par la commune de l'utilisateur connecté
-            $projets = Projet::where('commune_id', $user->commune_id)->get();
+    //     // Vérifier si l'utilisateur est connecté
+    //     if ($user) {
+    //         // Filtrer les projets par la commune de l'utilisateur connecté
+    //         $projets = Projet::where('commune_id', $user->commune_id)->get();
 
-            // Vérifier s'il n'y a aucun projet
-            if ($projets->isEmpty()) {
-                return response()->json(['message' => 'Aucun projet disponible pour votre commune.'], 200); // 200 OK
-            }
+    //         // Vérifier s'il n'y a aucun projet
+    //         if ($projets->isEmpty()) {
+    //             return response()->json(['message' => 'Aucun projet disponible pour votre commune.'], 200); // 200 OK
+    //         }
 
-            return response()->json($projets, 200); // 200 OK
+    //         // return response()->json($projets, 200); // 200 OK
+    //         return $this->Response('Liste des projets', $projets);
+    //     }
+
+    //     // Si l'utilisateur n'est pas connecté, retourner une réponse d'erreur
+    //     return response()->json(['error' => 'Unauthorized'], 401); // 401 Unauthorized
+    // }
+
+
+
+
+
+public function index(Request $request): JsonResponse
+{
+    // Récupérer l'utilisateur connecté
+    $user = Auth::user();
+
+    // Vérifier si l'utilisateur est connecté
+    if ($user) {
+        // Initialiser la requête de base
+        $query = Projet::where('commune_id', $user->commune_id);
+
+        // Ajouter le filtrage par statut si le paramètre est présent
+        if ($request->has('statut')) {
+            $statut = filter_var($request->query('statut'), FILTER_VALIDATE_BOOLEAN);
+            $query->where('statut', $statut);
         }
 
-        // Si l'utilisateur n'est pas connecté, retourner une réponse d'erreur
-        return response()->json(['error' => 'Unauthorized'], 401); // 401 Unauthorized
+        // Exécuter la requête
+        $projets = $query->get();
+
+        // Vérifier s'il n'y a aucun projet
+        if ($projets->isEmpty()) {
+            return response()->json(['message' => 'Aucun projet disponible pour votre commune.'], 200); // 200 OK
+        }
+
+        // Retourner les projets
+        return response()->json(['message' => 'Liste des projets', 'data' => $projets], 200); // 200 OK
     }
+
+    // Si l'utilisateur n'est pas connecté, retourner une réponse d'erreur
+    return response()->json(['error' => 'Unauthorized'], 401); // 401 Unauthorized
+}
+
+
+
+
+
 
 
 
@@ -96,58 +139,71 @@ public function store(StoreProjetRequest $request): JsonResponse
         $projet->delete();
         return response()->json(null, 204); // 204 No Content
     }
-    public function statistics(): JsonResponse
+
+    // methode pour mettre a jour le statut du projet
+
+    /**
+ * Update the status of the specified resource.
+ */
+public function updateStatut(Request $request, Projet $projet): JsonResponse
 {
-    $user = Auth::user();
+    $request->validate([
+        'statut' => 'required|boolean', // Assurez-vous que le statut est un booléen
+    ]);
 
-    // Vérifier si l'utilisateur est connecté et qu'il a le rôle de "maire"
-    if ($user && $user->role === 'habitant') {
-        // Obtenir l'ID de la commune de l'utilisateur
-        $communeId = $user->commune_id;
+    try {
+        // Mettre à jour le statut du projet
+        $projet->statut = $request->input('statut');
+        $projet->save();
 
-        // Compter les projets selon leur statut
-        $totalProjects = Projet::where('commune_id', $communeId)->count();
-        $submittedProjects = Projet::where('commune_id', $communeId)->where('statut', 'soumis')->count();
-        $approvedProjects = Projet::where('commune_id', $communeId)->where('statut', 'approuvé')->count();
-        $disapprovedProjects = Projet::where('commune_id', $communeId)->where('statut', 'désapprouvé')->count();
-        $pendingProjects = Projet::where('commune_id', $communeId)->where('statut', 'en attente')->count();
+        return response()->json(['message' => 'Statut du projet mis à jour avec succès'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Impossible de mettre à jour le statut du projet', 'message' => $e->getMessage()], 500);
+    }
+}
 
-        // Préparer les statistiques dans un tableau associatif
-        $statistics = [
-            'total' => $totalProjects,
-            'soumis' => $submittedProjects,
-            'approuvé' => $approvedProjects,
-            'désapprouvé' => $disapprovedProjects,
-            'en attente' => $pendingProjects,
-        ];
+// recuperer les projtes publies et non publies
 
-        return response()->json($statistics, 200);
+/**
+ * Display a listing of the published resources.
+ */
+public function getProjetsPublies(): JsonResponse
+{
+    $projets = Projet::where('statut', true)->get();
+    return response()->json($projets, 200);
+}
+
+/**
+ * Display a listing of the unpublished resources.
+ */
+public function getProjetsNonPublies(): JsonResponse
+{
+    $projets = Projet::where('statut', false)->get();
+    return response()->json($projets, 200);
+}
+
+
+// projet soumis d'un user
+public function getPublishedProjectsByUser($userId)
+    {
+        // Filtrer les projets par utilisateur et par statut
+        $publishedProjects = Projet::where('user_id', $userId)
+                                    ->where('statut', 1)  // Statut 1 signifie publié
+                                    ->get();
+
+        return response()->json($publishedProjects);
     }
 
-    // Retourner une réponse d'erreur si l'utilisateur n'a pas les autorisations nécessaires
-    return response()->json(['error' => 'Unauthorized'], 401);
-}
 
+    public function countTotalProjets() {
+        $count = Projet::count(); // Compte tous les projets
+        return response()->json(['count' => $count]);
+    }
 
-public function getVoteStatistics(Projet $projet): JsonResponse
-{
-    // Supposons que vous avez une relation définie entre Projet et Vote
-    // et que chaque vote a un champ 'statut' (true ou false)
-
-    $votes = $projet->votes; // Les votes associés à ce projet
-
-    // Calcul des votes totaux, approuvés et désapprouvés
-    $totalVotes = $votes->count();
-    $approvedVotes = $votes->where('statut', true)->count();  // Votes avec statut true
-    $disapprovedVotes = $votes->where('statut', false)->count(); // Votes avec statut false
-
-    return response()->json([
-        'vote_total' => $totalVotes,
-        'vote_approve' => $approvedVotes,
-        'vote_disapprove' => $disapprovedVotes
-    ], 200);
-}
-
+    public function countProjetsPublies() {
+        $count = Projet::where('statut', true)->count(); // Compte les projets publiés
+        return response()->json(['count' => $count]);
+    }
 
 
 }
